@@ -1,25 +1,17 @@
-using System;
-using System.Collections.Generic;
 using Content.Server.GameObjects.EntitySystems;
 using Content.Shared.Construction;
 using Content.Shared.Interfaces;
 using Content.Shared.Physics;
-using Microsoft.Extensions.Logging;
 using Robust.Shared.GameObjects;
-using Robust.Shared.GameObjects.Components.Transform;
-using Robust.Shared.Interfaces.GameObjects;
 using Robust.Shared.Interfaces.GameObjects.Components;
 using Robust.Shared.Interfaces.Map;
 using Robust.Shared.Interfaces.Physics;
 using Robust.Shared.IoC;
 using Robust.Shared.Localization;
 using Robust.Shared.Log;
-using Robust.Shared.Map;
 using Robust.Shared.Maths;
-using Robust.Shared.Physics;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
-using Robust.Shared.Utility;
 
 namespace Content.Server.GameObjects.Components.Items
 {
@@ -29,14 +21,14 @@ namespace Content.Server.GameObjects.Components.Items
     [RegisterComponent]
     public class UseToConstructComponent : Component, IUse
     {
+#pragma warning disable 649
         [Dependency]
         private readonly IMapManager _mapManager;
-        [Dependency]
-        private readonly ILocalizationManager _localizationManager;
         [Dependency]
         private readonly IPrototypeManager _prototypeManager;
         [Dependency]
         private readonly IPhysicsManager _physicsManager;
+#pragma warning restore 649
 
         private ConstructionPrototype _construct;
 
