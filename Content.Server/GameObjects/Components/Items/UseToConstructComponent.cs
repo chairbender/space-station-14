@@ -66,7 +66,7 @@ namespace Content.Server.GameObjects.Components.Items
 
             var user = eventArgs.User;
             var userGrid = _mapManager.GetGrid(user.Transform.GridID);
-            var destinationGridCoords = Align(userGrid, user.Transform.GridPosition);
+            var destinationGridCoords = userGrid.SnapGridCenter(user.Transform.GridPosition);
             var destinationWorldPos = destinationGridCoords.ToMapPos(_mapManager);
 
             if (_construct.CanBuildInImpassable == false)
@@ -93,22 +93,6 @@ namespace Content.Server.GameObjects.Components.Items
             Owner.Delete();
 
             return true;
-        }
-
-        private GridCoordinates Align(IMapGrid mapGrid, GridCoordinates gridCoordinates)
-        {
-            //TODO: Bring PlacementMode stuff into shared and use that, this is a duplicate of SnapGridCenter logic
-            var snapSize = mapGrid.SnapSize; //Find snap size.
-            var GridDistancing = snapSize;
-            var onGrid = true;
-
-            var mouseLocal = new Vector2( //Round local coordinates onto the snap grid
-                (float)(Math.Round((gridCoordinates.Position.X / (double)snapSize - 0.5f), MidpointRounding.AwayFromZero) + 0.5) * snapSize,
-                (float)(Math.Round((gridCoordinates.Position.Y / (double)snapSize - 0.5f), MidpointRounding.AwayFromZero) + 0.5) * snapSize);
-
-            //TODO: Read offset from snapgrid component
-            //return new GridCoordinates(mouseLocal + new Vector2(SnapGridOffset.Center.X, pManager.PlacementOffset.Y), MouseCoords.GridID);
-            return new GridCoordinates(mouseLocal, mapGrid.Index);
         }
     }
 }
