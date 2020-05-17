@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using Content.Server.GameObjects.Components.Interactable.Tools;
 using Content.Server.GameObjects.Components.Stack;
 using Content.Server.GameObjects.EntitySystems;
+using Content.Server.Interaction;
 using Content.Server.Interfaces;
+using Content.Server.Interfaces.GameObjects.Components.Interaction;
 using Content.Shared.Construction;
 using Content.Shared.GameObjects.Components;
 using Robust.Server.GameObjects;
@@ -38,6 +40,7 @@ namespace Content.Server.GameObjects.Components.Construction
         [Dependency] private readonly IEntitySystemManager _entitySystemManager;
         [Dependency] private readonly IServerNotifyManager _notifyManager;
         [Dependency] private readonly ILocalizationManager _localizationManager;
+        [Dependency] private readonly IInteractionManager _interactionManager;
 #pragma warning restore 649
 
         public override void Initialize()
@@ -52,8 +55,7 @@ namespace Content.Server.GameObjects.Components.Construction
         public bool AttackBy(AttackByEventArgs eventArgs)
         {
             var playerEntity = eventArgs.User;
-            var interactionSystem = _entitySystemManager.GetEntitySystem<InteractionSystem>();
-            if (!interactionSystem.InRangeUnobstructed(playerEntity.Transform.MapPosition, Owner.Transform.WorldPosition, ignoredEnt: Owner, insideBlockerValid: Prototype.CanBuildInImpassable))
+            if (!_interactionManager.InRangeUnobstructed(playerEntity.Transform.MapPosition, Owner.Transform.WorldPosition, ignoredEnt: Owner, insideBlockerValid: Prototype.CanBuildInImpassable))
             {
                 _notifyManager.PopupMessage(Owner.Transform.GridPosition, playerEntity,
                     _localizationManager.GetString("You can't reach there!"));

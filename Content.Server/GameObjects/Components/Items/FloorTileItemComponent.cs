@@ -1,5 +1,7 @@
 ﻿using Content.Server.GameObjects.Components.Stack;
 using Content.Server.GameObjects.EntitySystems;
+using Content.Server.Interaction;
+using Content.Server.Interfaces.GameObjects.Components.Interaction;
 using Content.Shared.Maps;
 using Robust.Server.GameObjects.EntitySystems;
 using Robust.Shared.GameObjects;
@@ -47,7 +49,7 @@ namespace Content.Server.GameObjects.Components.Items
             var coordinates = mapGrid.GridTileToLocal(tile.GridIndices);
             float distance = coordinates.Distance(_mapManager, Owner.Transform.GridPosition);
 
-            if (distance > InteractionSystem.InteractionRange)
+            if (distance > InteractionManager.InteractionRange)
             {
                 return;
             }

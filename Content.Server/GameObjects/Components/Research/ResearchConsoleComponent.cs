@@ -1,5 +1,7 @@
 ﻿using Content.Server.GameObjects.Components.Power;
 using Content.Server.GameObjects.EntitySystems;
+using Content.Server.Interaction;
+using Content.Server.Interfaces.GameObjects.Components.Interaction;
 using Content.Shared.Audio;
 using Content.Shared.GameObjects.Components.Research;
 using Content.Shared.Research;

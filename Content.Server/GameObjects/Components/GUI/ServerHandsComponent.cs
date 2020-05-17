@@ -4,6 +4,7 @@ using Robust.Shared.Utility;
 using System;
 using System.Collections.Generic;
 using Content.Server.GameObjects.EntitySystems;
+using Content.Server.Interaction;
 using Content.Server.Interfaces.GameObjects;
 using Content.Shared.GameObjects;
 using Robust.Server.GameObjects;
@@ -29,6 +30,7 @@ namespace Content.Server.GameObjects
     {
 #pragma warning disable 649
         [Dependency] private readonly IEntitySystemManager _entitySystemManager;
+        [Dependency] private readonly IInteractionManager _interactionManager;
 #pragma warning restore 649
 
         private string activeIndex;
@@ -146,7 +148,7 @@ namespace Content.Server.GameObjects
                 item.Owner.Transform.LocalPosition = Vector2.Zero;
             }
 
-            _entitySystemManager.GetEntitySystem<InteractionSystem>().HandSelectedInteraction(Owner, item.Owner);
+            _interactionManager.HandSelectedInteraction(Owner, item.Owner);
 
             return success;
         }
@@ -204,7 +206,7 @@ namespace Content.Server.GameObjects
                 return false;
             }
 
-            if (!_entitySystemManager.GetEntitySystem<InteractionSystem>().TryDroppedInteraction(Owner, item.Owner))
+            if (!_interactionManager.TryDroppedInteraction(Owner, item.Owner))
                 return false;
 
             item.RemovedFromSlot();
@@ -242,7 +244,7 @@ namespace Content.Server.GameObjects
             var inventorySlot = hands[slot];
             var item = inventorySlot.ContainedEntity.GetComponent<ItemComponent>();
 
-            if (!_entitySystemManager.GetEntitySystem<InteractionSystem>().TryDroppedInteraction(Owner, item.Owner))
+            if (!_interactionManager.TryDroppedInteraction(Owner, item.Owner))
                 return false;
 
             if (!inventorySlot.Remove(inventorySlot.ContainedEntity))
@@ -442,8 +444,7 @@ namespace Content.Server.GameObjects
             var used = GetActiveHand?.Owner;
             if (used != null)
             {
-                var interactionSystem = _entitySystemManager.GetEntitySystem<InteractionSystem>();
-                interactionSystem.TryUseInteraction(Owner, used);
+                _interactionManager.TryUseInteraction(Owner, used);
             }
         }
 
@@ -452,8 +453,7 @@ namespace Content.Server.GameObjects
             var item = GetActiveHand?.Owner;
             if (item != null)
             {
-                var interactionSystem = _entitySystemManager.GetEntitySystem<InteractionSystem>();
-                return interactionSystem.TryThrowInteraction(Owner, item);
+                return _interactionManager.TryThrowInteraction(Owner, item);
             }
 
             return false;
@@ -493,10 +493,9 @@ namespace Content.Server.GameObjects
 
                     if (playerEntity == Owner && slot.ContainedEntity != null)
                     {
-                        var interactionSystem = _entitySystemManager.GetEntitySystem<InteractionSystem>();
                         if (used != null)
                         {
-                            interactionSystem.Interaction(Owner, used, slot.ContainedEntity,
+                            _interactionManager.Interaction(Owner, used, slot.ContainedEntity,
                                 GridCoordinates.InvalidGrid);
                         }
                         else
@@ -504,7 +503,7 @@ namespace Content.Server.GameObjects
                             var entity = slot.ContainedEntity;
                             if (!Drop(entity))
                                 break;
-                            interactionSystem.Interaction(Owner, entity);
+                            _interactionManager.Interaction(Owner, entity);
                         }
                     }
 
@@ -518,8 +517,7 @@ namespace Content.Server.GameObjects
 
                     if (playerEntity == Owner && used != null)
                     {
-                        var interactionSystem = _entitySystemManager.GetEntitySystem<InteractionSystem>();
-                        interactionSystem.TryUseInteraction(Owner, used);
+                        _interactionManager.TryUseInteraction(Owner, used);
                     }
 
                     break;
@@ -532,8 +530,7 @@ namespace Content.Server.GameObjects
 
                     if (playerEntity == Owner && used != null)
                     {
-                        var interactionSystem = _entitySystemManager.GetEntitySystem<InteractionSystem>();
-                        interactionSystem.TryInteractionActivate(Owner, used);
+                        _interactionManager.TryInteractionActivate(Owner, used);
                     }
                     break;
                 }

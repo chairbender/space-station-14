@@ -2,7 +2,9 @@
 using Content.Server.GameObjects.Components;
 using Content.Server.GameObjects.Components.Destructible;
 using Content.Server.GameObjects.EntitySystems;
+using Content.Server.Interaction;
 using Content.Server.Interfaces.GameObjects;
+using Content.Server.Interfaces.GameObjects.Components.Interaction;
 using Content.Server.Throw;
 using Content.Shared.GameObjects;
 using Content.Shared.GameObjects.Components.Items;
@@ -36,6 +38,7 @@ namespace Content.Server.GameObjects
         [Dependency] private readonly IRobustRandom _robustRandom;
         [Dependency] private readonly IEntitySystemManager _entitySystemManager;
         [Dependency] private readonly IMapManager _mapManager;
+        [Dependency] private readonly IInteractionManager _interactionManager;
         #pragma warning restore 649
 
         private string _equippedPrefix;
@@ -96,7 +99,7 @@ namespace Content.Server.GameObjects
             var userPos = user.Transform.MapPosition;
             var itemPos = Owner.Transform.WorldPosition;
 
-            return _entitySystemManager.GetEntitySystem<InteractionSystem>()
+            return _interactionManager
                 .InRangeUnobstructed(userPos, itemPos, ignoredEnt: Owner, insideBlockerValid:true);
         }
 

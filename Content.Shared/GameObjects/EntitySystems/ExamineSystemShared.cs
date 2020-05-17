@@ -1,5 +1,6 @@
-using Content.Server.GameObjects.EntitySystems;
 using Content.Shared.GameObjects.Components.Mobs;
+using Content.Shared.Input;
+using Content.Shared.Interaction;
 using JetBrains.Annotations;
 using Robust.Shared.GameObjects.Systems;
 using Robust.Shared.Interfaces.GameObjects;
@@ -9,6 +10,7 @@ namespace Content.Shared.GameObjects.EntitySystems
 {
     public abstract class ExamineSystemShared : EntitySystem
     {
+
         public const float ExamineRange = 16f;
         public const float ExamineRangeSquared = ExamineRange * ExamineRange;
 
@@ -30,8 +32,7 @@ namespace Content.Shared.GameObjects.EntitySystems
                 return false;
             }
 
-            return IoCManager.Resolve<IEntitySystemManager>()
-                .GetEntitySystem<SharedInteractionSystem>()
+            return IoCManager.Resolve<ISharedInteractionManager>()
                 .InRangeUnobstructed(examiner.Transform.MapPosition, examined.Transform.MapPosition.Position,
                     ExamineRange, predicate: entity => entity == examiner || entity == examined, insideBlockerValid:true);
         }

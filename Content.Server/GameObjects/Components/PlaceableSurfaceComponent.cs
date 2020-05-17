@@ -1,4 +1,6 @@
 ﻿using Content.Server.GameObjects.EntitySystems;
+using Content.Server.Interaction;
+using Content.Server.Interfaces.GameObjects.Components.Interaction;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Serialization;
 

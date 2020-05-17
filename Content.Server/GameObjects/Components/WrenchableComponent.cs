@@ -1,5 +1,7 @@
 using Content.Server.GameObjects.Components.Interactable.Tools;
 using Content.Server.GameObjects.EntitySystems;
+using Content.Server.Interaction;
+using Content.Server.Interfaces.GameObjects.Components.Interaction;
 using Robust.Server.GameObjects;
 using Robust.Server.GameObjects.EntitySystems;
 using Robust.Shared.GameObjects;

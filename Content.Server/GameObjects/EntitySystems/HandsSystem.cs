@@ -3,6 +3,7 @@ using System.Linq;
 using Content.Server.GameObjects;
 using Content.Server.GameObjects.Components;
 using Content.Server.GameObjects.Components.Stack;
+using Content.Server.Interaction;
 using Content.Server.Interfaces;
 using Content.Server.Interfaces.GameObjects;
 using Content.Server.Throw;
@@ -40,6 +41,7 @@ namespace Content.Server.GameObjects.EntitySystems
         [Dependency] private readonly IMapManager _mapManager;
         [Dependency] private readonly IEntitySystemManager _entitySystemManager;
         [Dependency] private readonly IServerNotifyManager _notifyManager;
+        [Dependency] private readonly IInteractionManager _interactionManager;
 #pragma warning restore 649
 
         private const float ThrowForce = 1.5f; // Throwing force of mobs in Newtons
@@ -105,7 +107,9 @@ namespace Content.Server.GameObjects.EntitySystems
             if (!TryGetAttachedComponent(session as IPlayerSession, out HandsComponent handsComp))
                 return;
 
-            var interactionSystem = IoCManager.Resolve<IEntitySystemManager>().GetEntitySystem<InteractionSystem>();
+            // needed because this method is static and for some reason needs to be
+            // static
+            var interactionManager = IoCManager.Resolve<IInteractionManager>();
 
             var oldItem = handsComp.GetActiveHand;
 
@@ -114,10 +118,10 @@ namespace Content.Server.GameObjects.EntitySystems
             var newItem = handsComp.GetActiveHand;
 
             if(oldItem != null)
-                interactionSystem.HandDeselectedInteraction(handsComp.Owner, oldItem.Owner);
+                interactionManager.HandDeselectedInteraction(handsComp.Owner, oldItem.Owner);
 
             if(newItem != null)
-                interactionSystem.HandSelectedInteraction(handsComp.Owner, newItem.Owner);
+                interactionManager.HandSelectedInteraction(handsComp.Owner, newItem.Owner);
         }
 
         private bool HandleDrop(ICommonSession session, GridCoordinates coords, EntityUid uid)
@@ -133,10 +137,9 @@ namespace Content.Server.GameObjects.EntitySystems
             if (handsComp.GetActiveHand == null)
                 return false;
 
-            var interactionSystem = _entitySystemManager.GetEntitySystem<InteractionSystem>();
 
-            if(interactionSystem.InRangeUnobstructed(coords.ToMap(_mapManager), ent.Transform.WorldPosition, ignoredEnt: ent))
-                if (coords.InRange(_mapManager, ent.Transform.GridPosition, InteractionSystem.InteractionRange))
+            if(_interactionManager.InRangeUnobstructed(coords.ToMap(_mapManager), ent.Transform.WorldPosition, ignoredEnt: ent))
+                if (coords.InRange(_mapManager, ent.Transform.GridPosition, InteractionManager.InteractionRange))
                 {
                     handsComp.Drop(handsComp.ActiveIndex, coords);
                 }
@@ -144,7 +147,7 @@ namespace Content.Server.GameObjects.EntitySystems
                 {
                     var entCoords = ent.Transform.GridPosition.Position;
                     var entToDesiredDropCoords = coords.Position - entCoords;
-                    var clampedDropCoords = ((entToDesiredDropCoords.Normalized * InteractionSystem.InteractionRange) + entCoords);
+                    var clampedDropCoords = ((entToDesiredDropCoords.Normalized * InteractionManager.InteractionRange) + entCoords);
 
                     handsComp.Drop(handsComp.ActiveIndex, new GridCoordinates(clampedDropCoords, coords.GridID));
                 }

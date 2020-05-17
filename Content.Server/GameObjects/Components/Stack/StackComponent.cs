@@ -1,5 +1,7 @@
 ﻿using System;
 using Content.Server.GameObjects.EntitySystems;
+using Content.Server.Interaction;
+using Content.Server.Interfaces.GameObjects.Components.Interaction;
 using Content.Shared.GameObjects.Components;
 using Content.Shared.Interfaces;
 using Robust.Shared.GameObjects;

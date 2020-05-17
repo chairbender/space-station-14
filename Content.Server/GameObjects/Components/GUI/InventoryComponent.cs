@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Content.Server.GameObjects.EntitySystems;
+using Content.Server.Interaction;
 using Content.Shared.GameObjects;
 using Robust.Server.GameObjects.Components.Container;
 using Robust.Server.Interfaces.Player;
@@ -23,6 +24,7 @@ namespace Content.Server.GameObjects
     {
 #pragma warning disable 649
         [Dependency] private readonly IEntitySystemManager _entitySystemManager;
+        [Dependency] private readonly IInteractionManager _interactionManager;
 #pragma warning restore 649
 
         [ViewVariables]
@@ -110,7 +112,7 @@ namespace Content.Server.GameObjects
                 return false;
             }
 
-            _entitySystemManager.GetEntitySystem<InteractionSystem>().EquippedInteraction(Owner, item.Owner, slot);
+            _interactionManager.EquippedInteraction(Owner, item.Owner, slot);
 
             Dirty();
             return true;
@@ -170,7 +172,7 @@ namespace Content.Server.GameObjects
             var itemTransform = item.Owner.GetComponent<ITransformComponent>();
             itemTransform.GridPosition = Owner.GetComponent<ITransformComponent>().GridPosition;
 
-            _entitySystemManager.GetEntitySystem<InteractionSystem>().UnequippedInteraction(Owner, item.Owner, slot);
+            _interactionManager.UnequippedInteraction(Owner, item.Owner, slot);
 
             Dirty();
             return true;
@@ -284,7 +286,6 @@ namespace Content.Server.GameObjects
                 }
                 case ClientInventoryUpdate.Use:
                 {
-                    var interactionSystem = _entitySystemManager.GetEntitySystem<InteractionSystem>();
                     var hands = Owner.GetComponent<HandsComponent>();
                     var activeHand = hands.GetActiveHand;
                     var itemContainedInSlot = GetSlotItem(msg.Inventoryslot);
@@ -292,7 +293,7 @@ namespace Content.Server.GameObjects
                     {
                         if (activeHand != null)
                         {
-                            interactionSystem.Interaction(Owner, activeHand.Owner, itemContainedInSlot.Owner,
+                            _interactionManager.Interaction(Owner, activeHand.Owner, itemContainedInSlot.Owner,
                                 new GridCoordinates());
                         }
                         else if (Unequip(msg.Inventoryslot))

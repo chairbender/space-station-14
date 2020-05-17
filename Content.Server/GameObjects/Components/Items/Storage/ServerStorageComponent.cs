@@ -4,7 +4,9 @@ using System.Linq;
 using Content.Server.GameObjects.Components;
 using Content.Server.GameObjects.Components.Items.Storage;
 using Content.Server.GameObjects.EntitySystems;
+using Content.Server.Interaction;
 using Content.Server.Interfaces.GameObjects;
+using Content.Server.Interfaces.GameObjects.Components.Interaction;
 using Content.Shared.GameObjects.Components.Storage;
 using Content.Shared.Interfaces;
 using Robust.Server.GameObjects;
@@ -308,7 +310,7 @@ namespace Content.Server.GameObjects
                     // TODO: Replace by proper entity range check once it is implemented.
                     if (playerTransform.GridPosition.InRange(_mapManager,
                                                              storageTransform.GridPosition,
-                                                             InteractionSystem.InteractionRange))
+                                                             InteractionManager.InteractionRange))
                     {
                         PlayerInsertEntity(playerEntity);
                     }

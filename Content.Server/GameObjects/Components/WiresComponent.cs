@@ -4,8 +4,10 @@ using System.Linq;
 using Content.Server.GameObjects.Components.Interactable.Tools;
 using Content.Server.GameObjects.Components.VendingMachines;
 using Content.Server.GameObjects.EntitySystems;
+using Content.Server.Interaction;
 using Content.Server.Interfaces;
 using Content.Server.Interfaces.GameObjects;
+using Content.Server.Interfaces.GameObjects.Components.Interaction;
 using Content.Shared.GameObjects.Components;
 using JetBrains.Annotations;
 using Robust.Server.GameObjects;
@@ -30,6 +32,7 @@ namespace Content.Server.GameObjects.Components
         [Dependency] private readonly IRobustRandom _random;
         [Dependency] private readonly IServerNotifyManager _notifyManager;
         [Dependency] private readonly ILocalizationManager _localizationManager;
+        [Dependency] private readonly IInteractionManager _interactionManager;
 #pragma warning restore 649
         private AudioSystem _audioSystem;
         private AppearanceComponent _appearance;
@@ -235,8 +238,7 @@ namespace Content.Server.GameObjects.Components
                         return;
                     }
 
-                    var interactionSystem = IoCManager.Resolve<EntitySystemManager>().GetEntitySystem<InteractionSystem>();
-                    if (!interactionSystem.InRangeUnobstructed(player.Transform.MapPosition, Owner.Transform.WorldPosition, ignoredEnt: Owner))
+                    if (!_interactionManager.InRangeUnobstructed(player.Transform.MapPosition, Owner.Transform.WorldPosition, ignoredEnt: Owner))
                     {
                         _notifyManager.PopupMessage(Owner.Transform.GridPosition, player, _localizationManager.GetString("You can't reach there!"));
                         return;

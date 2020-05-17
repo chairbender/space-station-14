@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Content.Server.Interaction;
 using Robust.Server.GameObjects.EntitySystemMessages;
 using Robust.Server.Interfaces.Player;
 using Robust.Shared.GameObjects;
@@ -75,7 +76,7 @@ namespace Content.Server.GameObjects.EntitySystems
                     continue;
 
                 var distanceSquared = (storagePos - attachedEntity.Transform.WorldPosition).LengthSquared;
-                if (distanceSquared > InteractionSystem.InteractionRangeSquared)
+                if (distanceSquared > InteractionManager.InteractionRangeSquared)
                 {
                     storageComp.UnsubscribeSession(session);
                 }

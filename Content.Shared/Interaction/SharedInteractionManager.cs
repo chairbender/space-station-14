@@ -1,7 +1,6 @@
 ﻿using System;
 using Content.Shared.Physics;
 using JetBrains.Annotations;
-using Robust.Shared.GameObjects.Systems;
 using Robust.Shared.Interfaces.GameObjects;
 using Robust.Shared.Interfaces.Map;
 using Robust.Shared.Interfaces.Physics;
@@ -9,13 +8,13 @@ using Robust.Shared.IoC;
 using Robust.Shared.Map;
 using Robust.Shared.Maths;
 
-namespace Content.Server.GameObjects.EntitySystems
+namespace Content.Shared.Interaction
 {
     /// <summary>
     /// Governs interactions during clicking on entities
     /// </summary>
     [UsedImplicitly]
-    public class SharedInteractionSystem : EntitySystem
+    public class SharedInteractionManager : ISharedInteractionManager
     {
         #pragma warning disable 649
         [Dependency] private readonly IMapManager _mapManager;

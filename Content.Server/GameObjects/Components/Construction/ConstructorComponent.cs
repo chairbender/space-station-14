@@ -1,6 +1,7 @@
 ﻿using System;
 using Content.Server.GameObjects.Components.Stack;
 using Content.Server.GameObjects.EntitySystems;
+using Content.Server.Interaction;
 using Content.Shared.Construction;
 using Content.Shared.GameObjects.Components.Construction;
 using Content.Shared.Interfaces;
@@ -29,6 +30,7 @@ namespace Content.Server.GameObjects.Components.Construction
         [Dependency] private readonly IEntitySystemManager _entitySystemManager;
         [Dependency] private readonly ISharedNotifyManager _notifyManager;
         [Dependency] private readonly ILocalizationManager _localizationManager;
+        [Dependency] private readonly IInteractionManager _interactionManager;
 #pragma warning restore 649
 
         public override void HandleNetworkMessage(ComponentMessage message, INetChannel channel, ICommonSession session = null)
@@ -49,8 +51,7 @@ namespace Content.Server.GameObjects.Components.Construction
 
             var transform = Owner.Transform;
 
-            var interactionSystem = _entitySystemManager.GetEntitySystem<InteractionSystem>();
-            if (!interactionSystem.InRangeUnobstructed(loc.ToMap(_mapManager), Owner.Transform.WorldPosition, ignoredEnt: Owner, insideBlockerValid: prototype.CanBuildInImpassable))
+            if (!_interactionManager.InRangeUnobstructed(loc.ToMap(_mapManager), Owner.Transform.WorldPosition, ignoredEnt: Owner, insideBlockerValid: prototype.CanBuildInImpassable))
             {
                 _notifyManager.PopupMessage(transform.GridPosition, Owner,
                         _localizationManager.GetString("You can't reach there!"));

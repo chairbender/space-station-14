@@ -1,6 +1,7 @@
 ﻿using Content.Server.Cargo;
 using Content.Server.Chat;
 using Content.Server.GameTicking;
+using Content.Server.Interaction;
 using Content.Server.Interfaces;
 using Content.Server.Interfaces.Chat;
 using Content.Server.Interfaces.GameTicking;
@@ -30,6 +31,7 @@ namespace Content.Server
             IoCManager.Register<IModuleManager, ServerModuleManager>();
             IoCManager.Register<IServerPreferencesManager, ServerPreferencesManager>();
             IoCManager.Register<RecipeManager, RecipeManager>();
+            IoCManager.Register<IInteractionManager, InteractionManager>();
         }
     }
 }

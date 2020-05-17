@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Content.Server.GameObjects.Components.Projectiles;
 using Content.Server.GameObjects.EntitySystems;
+using Content.Server.Interaction;
 using Content.Shared.GameObjects;
 using Content.Shared.Physics;
 using Robust.Server.GameObjects;
@@ -16,6 +17,7 @@ namespace Content.Server.GameObjects.Components
     {
 #pragma warning disable 649
         [Dependency] private readonly IEntitySystemManager _entitySystemManager;
+        [Dependency] private readonly IInteractionManager _interactionManager;
 #pragma warning restore 649
 
         public override string Name => "ThrownItem";
@@ -46,7 +48,7 @@ namespace Content.Server.GameObjects.Components
 
                 // KYS, your job is finished. Trigger ILand as well.
                 Owner.RemoveComponent<ThrownItemComponent>();
-                _entitySystemManager.GetEntitySystem<InteractionSystem>().LandInteraction(User, Owner, Owner.Transform.GridPosition);
+                _interactionManager.LandInteraction(User, Owner, Owner.Transform.GridPosition);
             }
 
 

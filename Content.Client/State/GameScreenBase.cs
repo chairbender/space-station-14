@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Content.Client.GameObjects.Components;
-using Content.Server.GameObjects.EntitySystems;
 using Content.Shared.GameObjects;
+using Content.Shared.Input;
+using Content.Shared.Interaction;
 using Robust.Client.GameObjects.EntitySystems;
 using Robust.Client.Interfaces.GameObjects;
 using Robust.Client.Interfaces.GameObjects.Components;
@@ -33,6 +34,7 @@ namespace Content.Client.State
         [Dependency] private readonly IEntitySystemManager _entitySystemManager;
         [Dependency] private readonly IGameTiming _timing;
         [Dependency] private readonly IMapManager _mapManager;
+        [Dependency] private readonly ISharedInteractionManager _sharedInteractionManager;
 #pragma warning restore 649
 
         private IEntity _lastHoveredEntity;
@@ -59,7 +61,7 @@ namespace Content.Client.State
             {
                 var playerPos = _playerManager.LocalPlayer.ControlledEntity.Transform.MapPosition;
                 var entityPos = entityToClick.Transform.WorldPosition;
-                inRange = _entitySystemManager.GetEntitySystem<SharedInteractionSystem>()
+                inRange = _sharedInteractionManager
                     .InRangeUnobstructed(playerPos, entityPos, predicate:entity => entity != _playerManager.LocalPlayer.ControlledEntity || entity != entityToClick);
             }
 

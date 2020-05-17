@@ -2,16 +2,17 @@
 using System.Linq;
 using Content.Server.GameObjects.Components.Mobs;
 using Content.Server.GameObjects.Components.Timing;
+using Content.Server.GameObjects.EntitySystems;
 using Content.Server.Interfaces.GameObjects;
+using Content.Server.Interfaces.GameObjects.Components.Interaction;
 using Content.Shared.GameObjects.Components.Inventory;
 using Content.Shared.Input;
-using Content.Shared.Physics;
+using Content.Shared.Interaction;
 using JetBrains.Annotations;
 using Robust.Server.GameObjects.EntitySystems;
 using Robust.Server.Interfaces.Player;
 using Robust.Shared.GameObjects;
 using Robust.Shared.GameObjects.Components;
-using Robust.Shared.GameObjects.Systems;
 using Robust.Shared.Input;
 using Robust.Shared.Interfaces.GameObjects;
 using Robust.Shared.Interfaces.GameObjects.Components;
@@ -22,284 +23,28 @@ using Robust.Shared.Log;
 using Robust.Shared.Map;
 using Robust.Shared.Maths;
 using Robust.Shared.Players;
-
-namespace Content.Server.GameObjects.EntitySystems
+namespace Content.Server.Interaction
 {
-    /// <summary>
-    /// This interface gives components behavior when being clicked on or "attacked" by a user with an object in their hand
-    /// </summary>
-    public interface IAttackBy
-    {
-        /// <summary>
-        /// Called when using one object on another
-        /// </summary>
-        bool AttackBy(AttackByEventArgs eventArgs);
-    }
-
-    public class AttackByEventArgs : EventArgs
-    {
-        public IEntity User { get; set; }
-        public GridCoordinates ClickLocation { get; set; }
-        public IEntity AttackWith { get; set; }
-    }
-
-    /// <summary>
-    /// This interface gives components behavior when being clicked on or "attacked" by a user with an empty hand
-    /// </summary>
-    public interface IAttackHand
-    {
-        /// <summary>
-        /// Called when a player directly interacts with an empty hand
-        /// </summary>
-        bool AttackHand(AttackHandEventArgs eventArgs);
-    }
-
-    public class AttackHandEventArgs : EventArgs
-    {
-        public IEntity User { get; set; }
-    }
-
-    /// <summary>
-    /// This interface gives components behavior when being clicked by objects outside the range of direct use
-    /// </summary>
-    public interface IRangedAttackBy
-    {
-        /// <summary>
-        /// Called when we try to interact with an entity out of range
-        /// </summary>
-        /// <returns></returns>
-        bool RangedAttackBy(RangedAttackByEventArgs eventArgs);
-    }
-
-    [PublicAPI]
-    public class RangedAttackByEventArgs : EventArgs
-    {
-        public IEntity User { get; set; }
-        public IEntity Weapon { get; set; }
-        public GridCoordinates ClickLocation { get; set; }
-    }
-
-    /// <summary>
-    /// This interface gives components a behavior when clicking on another object and no interaction occurs
-    /// Doesn't pass what you clicked on as an argument, but if it becomes necessary we can add it later
-    /// </summary>
-    public interface IAfterAttack
-    {
-        /// <summary>
-        /// Called when we interact with nothing, or when we interact with an entity out of range that has no behavior
-        /// </summary>
-        void AfterAttack(AfterAttackEventArgs eventArgs);
-    }
-
-    public class AfterAttackEventArgs : EventArgs
-    {
-        public IEntity User { get; set; }
-        public GridCoordinates ClickLocation { get; set; }
-        public IEntity Attacked { get; set; }
-    }
-
-    /// <summary>
-    /// This interface gives components behavior when using the entity in your hands
-    /// </summary>
-    public interface IUse
-    {
-        /// <summary>
-        /// Called when we activate an object we are holding to use it
-        /// </summary>
-        /// <returns></returns>
-        bool UseEntity(UseEntityEventArgs eventArgs);
-    }
-
-    public class UseEntityEventArgs : EventArgs
-    {
-        public IEntity User { get; set; }
-    }
-
-    /// <summary>
-    ///     This interface gives components behavior when being activated in the world.
-    /// </summary>
-    public interface IActivate
-    {
-        /// <summary>
-        ///     Called when this component is activated by another entity.
-        /// </summary>
-        void Activate(ActivateEventArgs eventArgs);
-    }
-
-    public class ActivateEventArgs : EventArgs
-    {
-        public IEntity User { get; set; }
-    }
-
-    /// <summary>
-    ///     This interface gives components behavior when thrown.
-    /// </summary>
-    public interface IThrown
-    {
-        void Thrown(ThrownEventArgs eventArgs);
-    }
-
-    public class ThrownEventArgs : EventArgs
-    {
-        public ThrownEventArgs(IEntity user)
-        {
-            User = user;
-        }
-
-        public IEntity User { get; }
-    }
-
-    /// <summary>
-    ///     This interface gives components behavior when landing after being thrown.
-    /// </summary>
-    public interface ILand
-    {
-        void Land(LandEventArgs eventArgs);
-    }
-
-    public class LandEventArgs : EventArgs
-    {
-        public LandEventArgs(IEntity user, GridCoordinates landingLocation)
-        {
-            User = user;
-            LandingLocation = landingLocation;
-        }
-
-        public IEntity User { get; }
-        public GridCoordinates LandingLocation { get; }
-    }
-
-    /// <summary>
-    ///     This interface gives components behavior when their owner is put in an inventory slot.
-    /// </summary>
-    public interface IEquipped
-    {
-        void Equipped(EquippedEventArgs eventArgs);
-    }
-
-    public class EquippedEventArgs : EventArgs
-    {
-        public EquippedEventArgs(IEntity user, EquipmentSlotDefines.Slots slot)
-        {
-            User = user;
-            Slot = slot;
-        }
-
-        public IEntity User { get; }
-        public EquipmentSlotDefines.Slots Slot { get; }
-    }
-
-    /// <summary>
-    ///     This interface gives components behavior when their owner is removed from an inventory slot.
-    /// </summary>
-    public interface IUnequipped
-    {
-        void Unequipped(UnequippedEventArgs eventArgs);
-    }
-
-    public class UnequippedEventArgs : EventArgs
-    {
-        public UnequippedEventArgs(IEntity user, EquipmentSlotDefines.Slots slot)
-        {
-            User = user;
-            Slot = slot;
-        }
-
-        public IEntity User { get; }
-        public EquipmentSlotDefines.Slots Slot { get; }
-    }
-
-    /// <summary>
-    ///     This interface gives components behavior when being used to "attack".
-    /// </summary>
-    public interface IAttack
-    {
-        void Attack(AttackEventArgs eventArgs);
-    }
-
-    public class AttackEventArgs : EventArgs
-    {
-        public AttackEventArgs(IEntity user, GridCoordinates clickLocation)
-        {
-            User = user;
-            ClickLocation = clickLocation;
-        }
-
-        public IEntity User { get; }
-        public GridCoordinates ClickLocation { get; }
-    }
-
-    /// <summary>
-    ///     This interface gives components behavior when they're held on the selected hand.
-    /// </summary>
-    public interface IHandSelected
-    {
-        void HandSelected(HandSelectedEventArgs eventArgs);
-    }
-
-    public class HandSelectedEventArgs : EventArgs
-    {
-        public HandSelectedEventArgs(IEntity user)
-        {
-            User = user;
-        }
-
-        public IEntity User { get; }
-    }
-
-    /// <summary>
-    ///     This interface gives components behavior when they're held on a deselected hand.
-    /// </summary>
-    public interface IHandDeselected
-    {
-        void HandDeselected(HandDeselectedEventArgs eventArgs);
-    }
-
-    public class HandDeselectedEventArgs : EventArgs
-    {
-        public HandDeselectedEventArgs(IEntity user)
-        {
-            User = user;
-        }
-
-        public IEntity User { get; }
-    }
-
-    /// <summary>
-    ///     This interface gives components behavior when they're dropped by a mob.
-    /// </summary>
-    public interface IDropped
-    {
-        void Dropped(DroppedEventArgs eventArgs);
-    }
-
-    public class DroppedEventArgs : EventArgs
-    {
-        public DroppedEventArgs(IEntity user)
-        {
-            User = user;
-        }
-
-        public IEntity User { get; }
-    }
 
     /// <summary>
     /// Governs interactions during clicking on entities
     /// </summary>
     [UsedImplicitly]
-    public sealed class InteractionSystem : SharedInteractionSystem
+    public sealed class InteractionManager : SharedInteractionManager, IPostInjectInit, IInteractionManager
     {
 #pragma warning disable 649
         [Dependency] private readonly IMapManager _mapManager;
-        [Dependency] private readonly IPhysicsManager _physicsManager;
+        [Dependency] private readonly IEntitySystemManager _entitySystemManager;
+        [Dependency] private readonly IEntityManager _entityManager;
 #pragma warning restore 649
 
         public const float InteractionRange = 2;
         public const float InteractionRangeSquared = InteractionRange * InteractionRange;
 
-        public override void Initialize()
+
+        public void PostInject()
         {
-            var inputSys = EntitySystemManager.GetEntitySystem<InputSystem>();
+            var inputSys = _entitySystemManager.GetEntitySystem<InputSystem>();
             inputSys.BindMap.BindFunction(EngineKeyFunctions.Use,
                 new PointerInputCmdHandler(HandleUseItemInHand));
             inputSys.BindMap.BindFunction(ContentKeyFunctions.WideAttack,
@@ -308,11 +53,14 @@ namespace Content.Server.GameObjects.EntitySystems
                 new PointerInputCmdHandler(HandleActivateItemInWorld));
         }
 
-
+        private void RaiseLocalEvent(EntitySystemMessage message)
+        {
+            _entityManager.EventBus.RaiseEvent(EventSource.Local, message);
+        }
 
         private bool HandleActivateItemInWorld(ICommonSession session, GridCoordinates coords, EntityUid uid)
         {
-            if (!EntityManager.TryGetEntity(uid, out var used))
+            if (!_entityManager.TryGetEntity(uid, out var used))
                 return false;
 
             var playerEnt = ((IPlayerSession) session).AttachedEntity;
@@ -424,7 +172,7 @@ namespace Content.Server.GameObjects.EntitySystems
         private void UserInteraction(IEntity player, GridCoordinates coordinates, EntityUid clickedUid)
         {
             // Get entity clicked upon from UID if valid UID, if not assume no entity clicked upon and null
-            if (!EntityManager.TryGetEntity(clickedUid, out var attacked))
+            if (!_entityManager.TryGetEntity(clickedUid, out var attacked))
             {
                 attacked = null;
             }
@@ -918,6 +666,7 @@ namespace Content.Server.GameObjects.EntitySystems
                 attackComponent.Attack(eventArgs);
             }
         }
+
     }
 
     /// <summary>
