@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Robust.Shared.GameObjects;
 using Robust.Shared.GameObjects.Components.Transform;
 using Robust.Shared.Interfaces.GameObjects;
+using Robust.Shared.Interfaces.GameObjects.Components;
 using Robust.Shared.Interfaces.Map;
 using Robust.Shared.Interfaces.Physics;
 using Robust.Shared.IoC;
@@ -85,7 +86,10 @@ namespace Content.Server.GameObjects.Components.Items
                 }
             }
 
-            var spawned = user.EntityManager.SpawnEntity(_construct.ID, destinationGridCoords);
+            var ent = Owner.EntityManager.SpawnEntity(_construct.ID, destinationGridCoords);
+            // this is needed because south is the default rotation when placing things,
+            // otherwise IconSmooths like tables will have the wrong rotation
+            ent.GetComponent<ITransformComponent>().LocalRotation = Direction.South.ToAngle();
             Owner.Delete();
 
             return true;
