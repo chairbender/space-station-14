@@ -34,7 +34,7 @@ namespace Content.Server.Interaction
     {
 #pragma warning disable 649
         [Dependency] private readonly IMapManager _mapManager;
-        [Dependency] private readonly IEntitySystemManager _entitySystemManager;
+        [Dependency] private readonly IInputManager _inputManager;
         [Dependency] private readonly IEntityManager _entityManager;
 #pragma warning restore 649
 
@@ -44,12 +44,11 @@ namespace Content.Server.Interaction
 
         public void PostInject()
         {
-            var inputSys = _entitySystemManager.GetEntitySystem<InputSystem>();
-            inputSys.BindMap.BindFunction(EngineKeyFunctions.Use,
+            _inputManager.BindMap.BindFunction(EngineKeyFunctions.Use,
                 new PointerInputCmdHandler(HandleUseItemInHand));
-            inputSys.BindMap.BindFunction(ContentKeyFunctions.WideAttack,
+            _inputManager.BindMap.BindFunction(ContentKeyFunctions.WideAttack,
                 new PointerInputCmdHandler(HandleWideAttack));
-            inputSys.BindMap.BindFunction(ContentKeyFunctions.ActivateItemInWorld,
+            _inputManager.BindMap.BindFunction(ContentKeyFunctions.ActivateItemInWorld,
                 new PointerInputCmdHandler(HandleActivateItemInWorld));
         }
 

@@ -39,7 +39,7 @@ namespace Content.Server.GameObjects.EntitySystems
     {
 #pragma warning disable 649
         [Dependency] private readonly IMapManager _mapManager;
-        [Dependency] private readonly IEntitySystemManager _entitySystemManager;
+        [Dependency] private readonly IInputManager _inputManager;
         [Dependency] private readonly IServerNotifyManager _notifyManager;
         [Dependency] private readonly IInteractionManager _interactionManager;
 #pragma warning restore 649
@@ -54,25 +54,21 @@ namespace Content.Server.GameObjects.EntitySystems
             SubscribeLocalEvent<EntRemovedFromContainerMessage>(HandleContainerModified);
             SubscribeLocalEvent<EntInsertedIntoContainerMessage>(HandleContainerModified);
 
-            var input = EntitySystemManager.GetEntitySystem<InputSystem>();
-            input.BindMap.BindFunction(ContentKeyFunctions.SwapHands, InputCmdHandler.FromDelegate(HandleSwapHands));
-            input.BindMap.BindFunction(ContentKeyFunctions.Drop, new PointerInputCmdHandler(HandleDrop));
-            input.BindMap.BindFunction(ContentKeyFunctions.ActivateItemInHand, InputCmdHandler.FromDelegate(HandleActivateItem));
-            input.BindMap.BindFunction(ContentKeyFunctions.ThrowItemInHand, new PointerInputCmdHandler(HandleThrowItem));
-            input.BindMap.BindFunction(ContentKeyFunctions.SmartEquipBackpack, InputCmdHandler.FromDelegate(HandleSmartEquipBackpack));
-            input.BindMap.BindFunction(ContentKeyFunctions.SmartEquipBelt, InputCmdHandler.FromDelegate(HandleSmartEquipBelt));
+            _inputManager.BindMap.BindFunction(ContentKeyFunctions.SwapHands, InputCmdHandler.FromDelegate(HandleSwapHands));
+            _inputManager.BindMap.BindFunction(ContentKeyFunctions.Drop, new PointerInputCmdHandler(HandleDrop));
+            _inputManager.BindMap.BindFunction(ContentKeyFunctions.ActivateItemInHand, InputCmdHandler.FromDelegate(HandleActivateItem));
+            _inputManager.BindMap.BindFunction(ContentKeyFunctions.ThrowItemInHand, new PointerInputCmdHandler(HandleThrowItem));
+            _inputManager.BindMap.BindFunction(ContentKeyFunctions.SmartEquipBackpack, InputCmdHandler.FromDelegate(HandleSmartEquipBackpack));
+            _inputManager.BindMap.BindFunction(ContentKeyFunctions.SmartEquipBelt, InputCmdHandler.FromDelegate(HandleSmartEquipBelt));
         }
 
         /// <inheritdoc />
         public override void Shutdown()
         {
-            if (EntitySystemManager.TryGetEntitySystem(out InputSystem input))
-            {
-                input.BindMap.UnbindFunction(ContentKeyFunctions.SwapHands);
-                input.BindMap.UnbindFunction(ContentKeyFunctions.Drop);
-                input.BindMap.UnbindFunction(ContentKeyFunctions.ActivateItemInHand);
-                input.BindMap.UnbindFunction(ContentKeyFunctions.ThrowItemInHand);
-            }
+            _inputManager.BindMap.UnbindFunction(ContentKeyFunctions.SwapHands);
+            _inputManager.BindMap.UnbindFunction(ContentKeyFunctions.Drop);
+            _inputManager.BindMap.UnbindFunction(ContentKeyFunctions.ActivateItemInHand);
+            _inputManager.BindMap.UnbindFunction(ContentKeyFunctions.ThrowItemInHand);
 
             base.Shutdown();
         }

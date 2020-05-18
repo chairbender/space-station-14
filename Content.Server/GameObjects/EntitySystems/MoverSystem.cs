@@ -49,6 +49,7 @@ namespace Content.Server.GameObjects.EntitySystems
         [Dependency] private readonly IRobustRandom _robustRandom;
         [Dependency] private readonly IConfigurationManager _configurationManager;
         [Dependency] private readonly IEntityManager _entityManager;
+        [Dependency] private readonly IInputManager _inputManager;
 #pragma warning restore 649
 
         private AudioSystem _audioSystem;
@@ -77,13 +78,13 @@ namespace Content.Server.GameObjects.EntitySystems
                 session => HandleRunChange(session, false),
                 session => HandleRunChange(session, true));
 
-            var input = EntitySystemManager.GetEntitySystem<InputSystem>();
 
-            input.BindMap.BindFunction(EngineKeyFunctions.MoveUp, moveUpCmdHandler);
-            input.BindMap.BindFunction(EngineKeyFunctions.MoveLeft, moveLeftCmdHandler);
-            input.BindMap.BindFunction(EngineKeyFunctions.MoveRight, moveRightCmdHandler);
-            input.BindMap.BindFunction(EngineKeyFunctions.MoveDown, moveDownCmdHandler);
-            input.BindMap.BindFunction(EngineKeyFunctions.Run, runCmdHandler);
+
+            _inputManager.BindMap.BindFunction(EngineKeyFunctions.MoveUp, moveUpCmdHandler);
+            _inputManager.BindMap.BindFunction(EngineKeyFunctions.MoveLeft, moveLeftCmdHandler);
+            _inputManager.BindMap.BindFunction(EngineKeyFunctions.MoveRight, moveRightCmdHandler);
+            _inputManager.BindMap.BindFunction(EngineKeyFunctions.MoveDown, moveDownCmdHandler);
+            _inputManager.BindMap.BindFunction(EngineKeyFunctions.Run, runCmdHandler);
 
             SubscribeLocalEvent<PlayerAttachSystemMessage>(PlayerAttached);
             SubscribeLocalEvent<PlayerDetachedSystemMessage>(PlayerDetached);
@@ -112,14 +113,12 @@ namespace Content.Server.GameObjects.EntitySystems
         /// <inheritdoc />
         public override void Shutdown()
         {
-            if (EntitySystemManager.TryGetEntitySystem(out InputSystem input))
-            {
-                input.BindMap.UnbindFunction(EngineKeyFunctions.MoveUp);
-                input.BindMap.UnbindFunction(EngineKeyFunctions.MoveLeft);
-                input.BindMap.UnbindFunction(EngineKeyFunctions.MoveRight);
-                input.BindMap.UnbindFunction(EngineKeyFunctions.MoveDown);
-                input.BindMap.UnbindFunction(EngineKeyFunctions.Run);
-            }
+            _inputManager.BindMap.UnbindFunction(EngineKeyFunctions.MoveUp);
+            _inputManager.BindMap.UnbindFunction(EngineKeyFunctions.MoveLeft);
+            _inputManager.BindMap.UnbindFunction(EngineKeyFunctions.MoveRight);
+            _inputManager.BindMap.UnbindFunction(EngineKeyFunctions.MoveDown);
+            _inputManager.BindMap.UnbindFunction(EngineKeyFunctions.Run);
+
 
             base.Shutdown();
         }
