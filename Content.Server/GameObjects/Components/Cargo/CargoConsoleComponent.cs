@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Content.Server.Interfaces.GameObjects.Components.Interaction;
 using Robust.Shared.Map;
 
 namespace Content.Server.GameObjects.Components.Cargo

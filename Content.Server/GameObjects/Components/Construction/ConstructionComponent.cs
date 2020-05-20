@@ -4,6 +4,7 @@ using Content.Server.GameObjects.Components.Interactable.Tools;
 using Content.Server.GameObjects.Components.Stack;
 using Content.Server.GameObjects.EntitySystems;
 using Content.Server.Interfaces;
+using Content.Server.Interfaces.GameObjects.Components.Interaction;
 using Content.Shared.Construction;
 using Content.Shared.GameObjects.Components;
 using Robust.Server.GameObjects;

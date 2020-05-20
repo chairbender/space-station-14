@@ -3,6 +3,7 @@ using Content.Server.GameObjects.Components.Interactable.Tools;
 using Content.Server.GameObjects.Components.Power;
 using Content.Server.GameObjects.EntitySystems;
 using Content.Server.Interfaces;
+using Content.Server.Interfaces.GameObjects.Components.Interaction;
 using Content.Shared.GameObjects.Components.Gravity;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Robust.Server.GameObjects;

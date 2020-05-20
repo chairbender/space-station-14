@@ -21,6 +21,7 @@ using Robust.Server.GameObjects.Components.UserInterface;
 using Robust.Server.Interfaces.GameObjects;
 using Robust.Shared.Localization;
 using Content.Server.Interfaces;
+using Content.Server.Interfaces.GameObjects.Components.Interaction;
 using Robust.Shared.Audio;
 
 namespace Content.Server.GameObjects.Components.Kitchen

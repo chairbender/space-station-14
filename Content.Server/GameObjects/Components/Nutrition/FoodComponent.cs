@@ -2,6 +2,7 @@
 using Content.Server.GameObjects.Components.Chemistry;
 using Content.Server.GameObjects.Components.Sound;
 using Content.Server.GameObjects.EntitySystems;
+using Content.Server.Interfaces.GameObjects.Components.Interaction;
 using Content.Shared.Chemistry;
 using Content.Shared.GameObjects.Components.Nutrition;
 using Content.Shared.Interfaces;

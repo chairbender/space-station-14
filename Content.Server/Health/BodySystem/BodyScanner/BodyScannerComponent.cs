@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Content.Server.Interfaces.GameObjects.Components.Interaction;
 using Content.Shared.BodySystem;
 
 

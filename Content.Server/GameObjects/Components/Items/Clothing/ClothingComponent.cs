@@ -4,6 +4,7 @@ using Robust.Shared.Utility;
 using System;
 using System.Collections.Generic;
 using Content.Server.GameObjects.EntitySystems;
+using Content.Server.Interfaces.GameObjects.Components.Interaction;
 using Content.Shared.GameObjects;
 using Content.Shared.GameObjects.Components.Items;
 using Robust.Shared.GameObjects;

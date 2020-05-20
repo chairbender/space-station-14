@@ -4,6 +4,7 @@ using System.Text;
 using Content.Server.GameObjects.Components.Nutrition;
 using Content.Server.GameObjects.EntitySystems;
 using Content.Server.Interfaces;
+using Content.Server.Interfaces.GameObjects.Components.Interaction;
 using Content.Shared.Chemistry;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;

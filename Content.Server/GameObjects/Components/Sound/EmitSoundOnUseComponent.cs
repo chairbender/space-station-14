@@ -1,4 +1,5 @@
 ﻿using Content.Server.GameObjects.EntitySystems;
+using Content.Server.Interfaces.GameObjects.Components.Interaction;
 using Content.Shared.Audio;
 using Robust.Shared.Audio;
 using Robust.Shared.GameObjects;

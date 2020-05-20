@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Content.Server.BodySystem;
 using Content.Server.GameObjects.EntitySystems;
+using Content.Server.Interfaces.GameObjects.Components.Interaction;
 using Content.Shared.BodySystem;
 using Content.Shared.GameObjects;
 using Content.Shared.GameObjects.Components.Items;
