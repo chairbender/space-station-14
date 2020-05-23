@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Content.Server.GameObjects.Components.Mobs;
 using Content.Server.GameObjects.EntitySystems;
+using Content.Server.Interfaces.GameObjects.Components.Interaction;
 using Content.Shared.Audio;
 using Robust.Server.GameObjects;
 using Robust.Server.GameObjects.EntitySystems;
