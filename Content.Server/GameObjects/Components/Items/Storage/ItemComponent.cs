@@ -14,6 +14,7 @@ using Robust.Shared.Containers;
 using Robust.Shared.GameObjects;
 using Robust.Shared.GameObjects.Components;
 using Robust.Shared.Interfaces.GameObjects;
+using Robust.Shared.Interfaces.GameObjects.Components;
 using Robust.Shared.Interfaces.Map;
 using Robust.Shared.Interfaces.Physics;
 using Robust.Shared.Interfaces.Random;
@@ -49,8 +50,8 @@ namespace Content.Server.GameObjects
             }
             set
             {
-                Dirty();
                 _equippedPrefix = value;
+                Dirty();
             }
         }
 
@@ -113,23 +114,15 @@ namespace Content.Server.GameObjects
         [Verb]
         public sealed class PickUpVerb : Verb<ItemComponent>
         {
-            protected override string GetText(IEntity user, ItemComponent component)
-            {
-                if (user.TryGetComponent(out HandsComponent hands) && hands.IsHolding(component.Owner))
-                {
-                    return "Pick Up (Already Holding)";
-                }
-                return "Pick Up";
-            }
-
-            protected override VerbVisibility GetVisibility(IEntity user, ItemComponent component)
+            protected override void GetData(IEntity user, ItemComponent component, VerbData data)
             {
                 if (ContainerHelpers.IsInContainer(component.Owner) || !component.CanPickup(user))
                 {
-                    return VerbVisibility.Invisible;
+                    data.Visibility = VerbVisibility.Invisible;
+                    return;
                 }
 
-                return VerbVisibility.Visible;
+                data.Text = "Pick Up";
             }
 
             protected override void Activate(IEntity user, ItemComponent component)
