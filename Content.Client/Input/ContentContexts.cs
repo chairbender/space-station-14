@@ -1,5 +1,5 @@
 ﻿using Content.Shared.Input;
-using Robust.Shared.Input;
+using Robust.Shared.Input.Binding;
 
 namespace Content.Client.Input
 {

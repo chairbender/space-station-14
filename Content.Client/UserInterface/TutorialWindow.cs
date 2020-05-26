@@ -4,13 +4,13 @@ using Robust.Client.Interfaces.ResourceManagement;
 using Robust.Client.ResourceManagement;
 using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.CustomControls;
-using Robust.Shared.Input;
+using Robust.Shared.Input.Binding;
 using Robust.Shared.IoC;
 using Robust.Shared.Localization;
 using Robust.Shared.Maths;
 using Robust.Shared.Utility;
 using static Content.Shared.Input.ContentKeyFunctions;
-using static Robust.Shared.Input.EngineKeyFunctions;
+using static Robust.Shared.Input.Binding.EngineKeyFunctions;
 
 namespace Content.Client.UserInterface
 {

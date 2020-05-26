@@ -6,7 +6,7 @@ using Robust.Client.Interfaces.Graphics.ClientEye;
 using Robust.Client.Interfaces.Input;
 using Robust.Client.Player;
 using Robust.Shared.GameObjects.Systems;
-using Robust.Shared.Input;
+using Robust.Shared.Input.Binding;
 using Robust.Shared.IoC;
 
 namespace Content.Client.GameObjects.EntitySystems

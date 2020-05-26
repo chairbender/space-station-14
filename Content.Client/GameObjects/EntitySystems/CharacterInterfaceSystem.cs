@@ -5,7 +5,7 @@ using Robust.Client.GameObjects.EntitySystems;
 using Robust.Client.Player;
 using Robust.Client.UserInterface.CustomControls;
 using Robust.Shared.GameObjects.Systems;
-using Robust.Shared.Input;
+using Robust.Shared.Input.Binding;
 using Robust.Shared.IoC;
 
 namespace Content.Client.GameObjects.EntitySystems

@@ -13,7 +13,7 @@ using Robust.Client.Graphics.Overlays;
 using Robust.Client.Interfaces.Graphics.Overlays;
 using Robust.Client.Interfaces.Input;
 using Robust.Client.Player;
-using Robust.Shared.Input;
+using Robust.Shared.Input.Binding;
 using Robust.Shared.Interfaces.Timing;
 using Robust.Shared.IoC;
 using Robust.Shared.Maths;
